@@ -10,7 +10,8 @@ import java.time.LocalDate;
 public class VaccineDose {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vaccine_dose_seq")
+    @SequenceGenerator(name = "vaccine_dose_seq", sequenceName = "vaccine_dose_seq", allocationSize = 1)
     @Column(name = "DOSE_ID")
     private Long doseId;
 
