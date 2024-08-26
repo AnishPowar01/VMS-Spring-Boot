@@ -1,4 +1,7 @@
 package com.vms.vaccineManagementSystem.dto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.vms.vaccineManagementSystem.entity.User;
+
 import java.time.LocalDate;
 
 public class VaccineDoseDTO {
@@ -8,6 +11,16 @@ public class VaccineDoseDTO {
     private LocalDate vaccinationDate;
     private String vaccineType;
     private LocalDate nextDueDate;
+    @JsonIgnore
+    private Long userId;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getDoseId() {
         return doseId;

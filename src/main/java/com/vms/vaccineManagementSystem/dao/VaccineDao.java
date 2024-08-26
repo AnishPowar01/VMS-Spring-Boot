@@ -61,6 +61,35 @@ public class VaccineDao {
         return mapToUserDTO(user1, vaccineDoseDTOs);
     }
 
+    @Transactional
+    public VaccineDoseDTO addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
+    {
+
+        Long userId = vaccineDoseDTO.getUserId();
+
+        Session session = entityManager.unwrap(Session.class);
+
+        User user = session.get(User.class, userId);
+
+        VaccineDose vaccineDose = new VaccineDose();
+        vaccineDose.setDoseNumber(vaccineDoseDTO.getDoseNumber());
+        vaccineDose.setVaccinationDate(vaccineDoseDTO.getVaccinationDate());
+        vaccineDose.setVaccineType(vaccineDoseDTO.getVaccineType());
+        vaccineDose.setUser(user);
+
+        session.save(vaccineDose);
+
+        User updatedUser = session.get(User.class, userId);
+
+
+        User user1 =  updateVaccinationStatus(updatedUser);
+
+        System.out.println(user1);
+
+        return null;
+    }
+
+
     private User updateVaccinationStatus(User user) {
         List<VaccineDose> doses = user.getVaccineDoses();
         int doseCount = doses.size();

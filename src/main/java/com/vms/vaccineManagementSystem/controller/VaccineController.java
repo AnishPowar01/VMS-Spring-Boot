@@ -2,6 +2,7 @@ package com.vms.vaccineManagementSystem.controller;
 
 import com.vms.vaccineManagementSystem.dao.VaccineDao;
 import com.vms.vaccineManagementSystem.dto.UserDTO;
+import com.vms.vaccineManagementSystem.dto.VaccineDoseDTO;
 import com.vms.vaccineManagementSystem.entity.User;
 import com.vms.vaccineManagementSystem.entity.VaccineDose;
 import org.springframework.http.HttpStatus;
@@ -40,5 +41,14 @@ public class VaccineController {
              UserDTO createdUser = vaccineDao.registerUser(userDTO);
              return createdUser;
     }
+
+    @PostMapping("/addDose")
+    public VaccineDoseDTO addVaccineDose(@RequestBody VaccineDoseDTO vaccineDoseDTO)
+    {
+        VaccineDoseDTO doseDTO = vaccineDao.addVaccineDose(vaccineDoseDTO);
+
+        return doseDTO;
+    }
+
 
 }
