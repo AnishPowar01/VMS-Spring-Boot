@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -63,7 +64,7 @@ public class VaccineDao {
     }
 
     @Transactional
-    public VaccineDoseDTO addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
+    public String addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
     {
 
         Long userId = vaccineDoseDTO.getUserId();
@@ -103,10 +104,18 @@ public class VaccineDao {
         }
         else
         {
-            return null;
+            return "Failure";
         }
 
-        return null;
+        return "success";
+    }
+
+    @Transactional
+    public List<User> getAllUserDetails() {
+        Session session = entityManager.unwrap(Session.class);
+        Query query=session.createQuery("from User",User.class);
+        List<User> user=query.getResultList();
+        return user;
     }
 
 
@@ -146,13 +155,14 @@ public class VaccineDao {
         int size = user.getVaccineDoses().size() - 1;
         int count = user.getVaccineDoses().get(size).getDoseNumber();
 
-        if(count == 3)
+        Optional<Integer> maxiDose = user.getVaccineDoses().stream().map(VaccineDose::getDoseNumber).max(Integer::compare);
+        if(maxiDose.get() == 3)
         {
             session.delete(user);
         }
         else
         {
-            return "dard";
+            return "Failure";
         }
 
         return "success";

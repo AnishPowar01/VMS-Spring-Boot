@@ -43,9 +43,9 @@ public class VaccineController {
     }
 
     @PostMapping("/addDose")
-    public VaccineDoseDTO addVaccineDose(@RequestBody VaccineDoseDTO vaccineDoseDTO)
+    public String addVaccineDose(@RequestBody VaccineDoseDTO vaccineDoseDTO)
     {
-        VaccineDoseDTO doseDTO = vaccineDao.addVaccineDose(vaccineDoseDTO);
+        String doseDTO = vaccineDao.addVaccineDose(vaccineDoseDTO);
 
         return doseDTO;
     }
@@ -56,6 +56,11 @@ public class VaccineController {
         return vaccineDao.deleteUser(userId);
     }
 
+    @GetMapping("/userDetails")
+    public List<User> getUserDetails()
+    {
+        return vaccineDao.getAllUserDetails();
+    }
 
 
 }
