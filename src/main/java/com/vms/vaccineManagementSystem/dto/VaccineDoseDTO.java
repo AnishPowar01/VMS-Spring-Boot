@@ -10,8 +10,9 @@ public class VaccineDoseDTO {
     private int doseNumber;
     private LocalDate vaccinationDate;
     private String vaccineType;
-    private LocalDate nextDueDate;
     @JsonIgnore
+    private LocalDate nextDueDate;
+//    @JsonIgnore
     private Long userId;
 
     public Long getUserId() {
@@ -60,5 +61,17 @@ public class VaccineDoseDTO {
 
     public void setNextDueDate(LocalDate nextDueDate) {
         this.nextDueDate = nextDueDate;
+    }
+
+    @Override
+    public String toString() {
+        return "VaccineDoseDTO{" +
+                "doseId=" + doseId +
+                ", doseNumber=" + doseNumber +
+                ", vaccinationDate=" + vaccinationDate +
+                ", vaccineType='" + vaccineType + '\'' +
+                ", nextDueDate=" + nextDueDate +
+                ", userId=" + userId +
+                '}';
     }
 }

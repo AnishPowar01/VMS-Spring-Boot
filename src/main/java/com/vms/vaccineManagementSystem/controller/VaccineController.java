@@ -50,5 +50,12 @@ public class VaccineController {
         return doseDTO;
     }
 
+    @DeleteMapping("/deleteUser/{userId}")
+    public String deleteUser(@PathVariable Long userId)
+    {
+        return vaccineDao.deleteUser(userId);
+    }
+
+
 
 }
