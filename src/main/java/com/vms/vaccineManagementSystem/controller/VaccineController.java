@@ -1,6 +1,7 @@
 package com.vms.vaccineManagementSystem.controller;
 
 import com.vms.vaccineManagementSystem.dao.VaccineDao;
+import com.vms.vaccineManagementSystem.dao.VaccineDaoImpl;
 import com.vms.vaccineManagementSystem.dto.UserDTO;
 import com.vms.vaccineManagementSystem.dto.VaccineDoseDTO;
 import com.vms.vaccineManagementSystem.entity.User;
@@ -8,8 +9,6 @@ import com.vms.vaccineManagementSystem.entity.VaccineDose;
 import com.vms.vaccineManagementSystem.exception.ConstraintsOverruledException;
 import com.vms.vaccineManagementSystem.exception.DeleteConstraintsOverruledException;
 import com.vms.vaccineManagementSystem.exception.UserNotFoundException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +34,9 @@ public class VaccineController {
         return "server is up and running";
     }
 
-    public VaccineController(VaccineDao vaccineDao)
+    public VaccineController(VaccineDaoImpl vaccineDaoImpl)
     {
-        this.vaccineDao = vaccineDao;
+        this.vaccineDao = vaccineDaoImpl;
     }
 
 
