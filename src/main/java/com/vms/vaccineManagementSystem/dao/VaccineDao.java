@@ -48,7 +48,7 @@ public class VaccineDao {
 
 
     @Transactional
-    public UserDTO getUserDetails(Long userId) {
+    public UserDTO getUserDetailsById(Long userId) {
 //        String jpql = "SELECT vd FROM VaccineDose vd WHERE vd.user.userId = :userId";
         Session session = entityManager.unwrap(Session.class);
         User user = session.get(User.class, userId);

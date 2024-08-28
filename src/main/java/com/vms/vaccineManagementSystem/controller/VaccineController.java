@@ -15,12 +15,20 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * @Class VaccineController
+ * @Description reponsible to handle all incoming requests regarding to vaccine registration
+ */
 @RestController
 @RequestMapping("/vaccine")
 public class VaccineController {
 
     private VaccineDao vaccineDao;
 
+    /**
+     * @Method testServer
+     * @Description for checking ping
+     */
     @GetMapping("/test")
     public String testServer()
     {
@@ -33,9 +41,16 @@ public class VaccineController {
     }
 
 
+    /**
+     * @Method getUserDetailsById
+     * @Description responsible to fetch the details of particular user
+     * @Params {Long userId}  Unique Identifier of user
+     * @Return ResponseEntity<UserDTO>
+     */
+
     @GetMapping("/userDetails/{userId}")
-    public ResponseEntity<UserDTO> getUserDetails(@PathVariable Long userId) {
-        UserDTO userDTO = vaccineDao.getUserDetails(userId);
+    public ResponseEntity<UserDTO> getUserDetailsById(@PathVariable Long userId) {
+        UserDTO userDTO = vaccineDao.getUserDetailsById(userId);
 
         if (userDTO != null) {
             return ResponseEntity.ok(userDTO);
@@ -44,6 +59,12 @@ public class VaccineController {
         }
     }
 
+    /**
+     * @Method registerUser
+     * @Description responsible to save the user in database
+     * @Params {UserDto userDTO}  User details in term of UserDTO Object => refer UserDTO
+     * @Return UserDTO
+     */
 
     @PostMapping("/register")
     public UserDTO registerUser(@RequestBody UserDTO userDTO)
@@ -51,6 +72,13 @@ public class VaccineController {
              UserDTO createdUser = vaccineDao.registerUser(userDTO);
              return createdUser;
     }
+
+    /**
+     * @Method addVaccineDose
+     * @Description responsible to add vaccine dose to particular user
+     * @Params {VaccineDoseDTO vaccineDoseDTO}  vaccination details in term of vaccineDoseDTO Object => refer VaccineDoseDTO
+     * @Return ResponseEntity<VaccineDose>
+     */
 
     @PostMapping("/addDose")
     public ResponseEntity<VaccineDose> addVaccineDose(@RequestBody VaccineDoseDTO vaccineDoseDTO)
@@ -71,6 +99,13 @@ public class VaccineController {
 
     }
 
+    /**
+     * @Method deleteUser
+     * @Description responsible to delete the particular user
+     * @Params {Long userId}  Unique Identifier of user
+     * @Return ResponseEntity<String>
+     */
+
     @DeleteMapping("/deleteUser/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable Long userId)
     {
@@ -90,6 +125,11 @@ public class VaccineController {
         }
     }
 
+    /**
+     * @Method getUserDetails
+     * @Description responsible fetch the all user details
+     * @Return List<User>
+     */
     @GetMapping("/userDetails")
     public List<User> getUserDetails()
     {
