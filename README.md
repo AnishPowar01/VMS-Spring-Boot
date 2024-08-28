@@ -21,16 +21,13 @@ The Vaccine Management System (VMS) is a Spring Boot application designed to man
 4. **Add Dose to Particular User**
     - Functionality to add a new dose to a specific user.
 
-
-### Pending Features
-
-1. **Give Dose After 120 Days**
+5. **Give Dose After 120 Days**
     - Enforces a minimum gap of 120 days between doses before administering another dose.
 
-2. **Delete User**
+6. **Delete User**
     - Ability to delete a user from the system.
 
-3. **Same Dose Equality Check**
+7. **Same Dose Equality Check**
     - Ensures that the vaccine dose type administered is the same as the previous dose type.
 
 ## Getting Started
