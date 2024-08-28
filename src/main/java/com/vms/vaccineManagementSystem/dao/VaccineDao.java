@@ -53,10 +53,9 @@ public class VaccineDao {
         Session session = entityManager.unwrap(Session.class);
         User user = session.get(User.class, userId);
 
+        if(user == null) return null;
+
         User user1 =  updateVaccinationStatus(user);
-
-
-
         List<VaccineDoseDTO> vaccineDoseDTOs = user1.getVaccineDoses().stream().map(this::mapToVaccineDoseDTO).collect(Collectors.toList());
         System.out.println(vaccineDoseDTOs);
         System.out.println(user1);
@@ -64,7 +63,7 @@ public class VaccineDao {
     }
 
     @Transactional
-    public String addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
+    public VaccineDose addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
     {
 
         Long userId = vaccineDoseDTO.getUserId();
@@ -104,10 +103,10 @@ public class VaccineDao {
         }
         else
         {
-            return "Failure";
+            return null;
         }
 
-        return "success";
+        return vaccineDose;
     }
 
     @Transactional
@@ -151,6 +150,11 @@ public class VaccineDao {
         Session session = entityManager.unwrap(Session.class);
 
         User user = session.get(User.class, userId);
+
+        if(user == null)
+        {
+            return null;
+        }
 
         int size = user.getVaccineDoses().size() - 1;
         int count = user.getVaccineDoses().get(size).getDoseNumber();
