@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -52,20 +53,85 @@ public class VaccineDao {
         Session session = entityManager.unwrap(Session.class);
         User user = session.get(User.class, userId);
 
-       User user1 =  updateVaccinationStatus(user);
+        if(user == null) return null;
 
-        System.out.println(user1);
-
+        User user1 =  updateVaccinationStatus(user);
         List<VaccineDoseDTO> vaccineDoseDTOs = user1.getVaccineDoses().stream().map(this::mapToVaccineDoseDTO).collect(Collectors.toList());
-
+        System.out.println(vaccineDoseDTOs);
+        System.out.println(user1);
         return mapToUserDTO(user1, vaccineDoseDTOs);
     }
 
+    @Transactional
+    public VaccineDose addVaccineDose(VaccineDoseDTO vaccineDoseDTO)
+    {
+
+        Long userId = vaccineDoseDTO.getUserId();
+        System.out.println(vaccineDoseDTO);
+
+        Session session = entityManager.unwrap(Session.class);
+        User user = session.get(User.class, userId);
+        int size = user.getVaccineDoses().size() - 1;
+        VaccineDose vaccineDose = new VaccineDose();
+        vaccineDose.setDoseNumber(vaccineDoseDTO.getDoseNumber());
+        vaccineDose.setVaccinationDate(vaccineDoseDTO.getVaccinationDate());
+        vaccineDose.setVaccineType(vaccineDoseDTO.getVaccineType());
+
+        vaccineDose.setNextDueDate(vaccineDoseDTO.getVaccinationDate().plusDays(120));
+        vaccineDose.setUser(user);
+
+        System.out.println(vaccineDose);
+
+        if(vaccineDoseDTO.getDoseNumber() == 1 && size < 0)
+        {
+            session.save(vaccineDose);
+            User updatedUser = session.get(User.class, userId);
+            User user1 =  updateVaccinationStatus(updatedUser);
+        }
+        else if(size >= 0 &&  user.getVaccineDoses().get(size).getDoseNumber() == vaccineDoseDTO.getDoseNumber()-1
+                && vaccineDoseDTO.getVaccineType().equals(user.getVaccineDoses().get(size).getVaccineType()) && !vaccineDoseDTO.getVaccinationDate().isBefore(user.getVaccineDoses().get(size).getVaccinationDate().plusDays(120))
+
+        && vaccineDoseDTO.getDoseNumber() < 4
+        )
+        {
+
+            session.save(vaccineDose);
+
+            User updatedUser = session.get(User.class, userId);
+            User user1 =  updateVaccinationStatus(updatedUser);
+            System.out.println(user1);
+        }
+        else
+        {
+            return null;
+        }
+
+        return vaccineDose;
+    }
+
+    @Transactional
+    public List<User> getAllUserDetails() {
+        Session session = entityManager.unwrap(Session.class);
+        Query query=session.createQuery("from User",User.class);
+        List<User> user=query.getResultList();
+        return user;
+    }
+
+
     private User updateVaccinationStatus(User user) {
         List<VaccineDose> doses = user.getVaccineDoses();
-        int doseCount = doses.size();
 
-        if (doseCount >= 2) {
+        int maxDoseCount = 0;
+
+        for(VaccineDose vaccineDose : doses)
+        {
+            maxDoseCount = Math.max(vaccineDose.getDoseNumber(), maxDoseCount);
+        }
+
+        int doseCount = maxDoseCount;
+        int doseHistory = doses.size();
+
+        if (doseCount >= 2 && (doseHistory == 2 || doseHistory == 3)) {
             user.setStatus("Fully Vaccinated");
         } else if (doseCount == 1) {
             user.setStatus("Partially Vaccinated");
@@ -76,6 +142,37 @@ public class VaccineDao {
         return user;
 
     }
+
+    @Transactional
+    public String deleteUser(Long userId)
+    {
+
+        Session session = entityManager.unwrap(Session.class);
+
+        User user = session.get(User.class, userId);
+
+        if(user == null)
+        {
+            return null;
+        }
+
+        int size = user.getVaccineDoses().size() - 1;
+        int count = user.getVaccineDoses().get(size).getDoseNumber();
+
+        Optional<Integer> maxiDose = user.getVaccineDoses().stream().map(VaccineDose::getDoseNumber).max(Integer::compare);
+        if(maxiDose.get() == 3)
+        {
+            session.delete(user);
+        }
+        else
+        {
+            return "Failure";
+        }
+
+        return "success";
+
+    }
+
 
     private UserDTO mapToUserDTO(User user, List<VaccineDoseDTO> vaccineDoses) {
         UserDTO userDTO = new UserDTO();
@@ -97,9 +194,7 @@ public class VaccineDao {
         dto.setVaccinationDate(vaccineDose.getVaccinationDate());
         dto.setVaccineType(vaccineDose.getVaccineType());
         dto.setNextDueDate(vaccineDose.getNextDueDate());
+        dto.setUserId(vaccineDose.getUser().getUserId());
         return dto;
     }
-
-
-
 }
